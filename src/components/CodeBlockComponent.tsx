@@ -1,13 +1,12 @@
 import { NodeViewWrapper, NodeViewContent } from '@tiptap/react';
 import { Play, Trash2, TerminalSquare } from 'lucide-react';
-import { useState } from 'react';
 import { useConsoleStore } from '../store/useConsoleStore';
 import { useModalStore } from '../store/useModalStore';
 
 export const CodeBlockComponent = ({ node, updateAttributes, deleteNode }: any) => {
   const { openConsole, addLog, setLoading } = useConsoleStore();
   const { confirm } = useModalStore();
-  
+
   const language = node.attrs.language || 'python';
 
   const handleDelete = async () => {
@@ -23,7 +22,7 @@ export const CodeBlockComponent = ({ node, updateAttributes, deleteNode }: any) 
   const handleRun = async () => {
     openConsole();
     setLoading(true);
-    
+
     try {
       const response = await fetch('/api/execute', {
         method: 'POST',
@@ -33,9 +32,9 @@ export const CodeBlockComponent = ({ node, updateAttributes, deleteNode }: any) 
           code: node.textContent,
         }),
       });
-      
+
       const result = await response.json();
-      
+
       addLog({
         language,
         code: node.textContent,
@@ -64,7 +63,7 @@ export const CodeBlockComponent = ({ node, updateAttributes, deleteNode }: any) 
         stderr: '',
       });
       openConsole();
-      
+
       const response = await fetch('/api/execute-external', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -74,7 +73,7 @@ export const CodeBlockComponent = ({ node, updateAttributes, deleteNode }: any) 
         }),
       });
       const result = await response.json();
-      
+
       addLog({
         language,
         code: node.textContent,
@@ -92,7 +91,7 @@ export const CodeBlockComponent = ({ node, updateAttributes, deleteNode }: any) 
   };
 
   return (
-    <NodeViewWrapper 
+    <NodeViewWrapper
       className="group relative rounded-xl overflow-hidden bg-[#f8f9fa] dark:bg-[#1e1e1e] my-6 border border-[#e5e7eb] dark:border-[#333] shadow-sm"
     >
       <div className="flex items-center justify-between px-4 py-2 bg-[#f3f4f6] dark:bg-[#2d2d2d] border-b border-[#e5e7eb] dark:border-[#333]" contentEditable={false}>
@@ -105,7 +104,7 @@ export const CodeBlockComponent = ({ node, updateAttributes, deleteNode }: any) 
           <option value="javascript">JavaScript (Node)</option>
           <option value="bash">Bash</option>
         </select>
-        
+
         <div className="flex items-center gap-2 transition-opacity duration-200 opacity-100 md:opacity-0 md:group-hover:opacity-100">
           <button
             onClick={handleRunExternal}
@@ -123,7 +122,7 @@ export const CodeBlockComponent = ({ node, updateAttributes, deleteNode }: any) 
             Run
           </button>
           <button
-            onClick={handleDelete} 
+            onClick={handleDelete}
             className="text-gray-400 hover:text-red-400 p-1 rounded transition-colors"
             title="Delete block"
           >
@@ -131,7 +130,7 @@ export const CodeBlockComponent = ({ node, updateAttributes, deleteNode }: any) 
           </button>
         </div>
       </div>
-      
+
       <pre className="!m-0 !bg-transparent p-4 overflow-x-auto font-mono text-[13px] leading-relaxed">
         <NodeViewContent as={"code" as any} className="!bg-transparent" />
       </pre>
