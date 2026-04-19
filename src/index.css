@@ -1,0 +1,205 @@
+@import "tailwindcss";
+@import "highlight.js/styles/atom-one-dark.css";
+
+@theme {
+  --color-background: var(--bg);
+  --color-surface: var(--surface);
+  --color-surfaceHover: var(--surface-hover);
+  --color-border: var(--border);
+  --color-textPrimary: var(--text-primary);
+  --color-textSecondary: var(--text-secondary);
+  --color-accent: #8b5cf6;
+  --color-accentHover: #7c3aed;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-serif: "Lora", "Georgia", serif;
+  --font-heading: "Outfit", system-ui, sans-serif;
+}
+
+@layer base {
+  :root {
+    --bg: #fcfbf9;
+    --surface: #ffffff;
+    --surface-hover: #f3f1ec;
+    --border: #e8e6e1;
+    --text-primary: #2d2b2a;
+    --text-secondary: #66635f;
+  }
+
+  .dark {
+    --bg: #121212;
+    --surface: #1e1e1e;
+    --surface-hover: #2d2d2d;
+    --border: #333333;
+    --text-primary: #e8e8e8;
+    --text-secondary: #999999;
+  }
+
+  body {
+    @apply bg-background text-textPrimary font-sans antialiased;
+  }
+}
+
+/* Tiptap Editor Styles */
+.tiptap {
+  @apply outline-none min-h-[300px] text-lg leading-relaxed;
+}
+
+.tiptap p.is-editor-empty:first-child::before {
+  color: #a3a19e;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.tiptap h1 {
+  @apply text-4xl font-heading font-bold mt-8 mb-4 tracking-tight;
+}
+
+.tiptap h2 {
+  @apply text-2xl font-heading font-semibold mt-6 mb-3;
+}
+
+.tiptap p {
+  @apply mb-4;
+}
+
+.tiptap blockquote {
+  @apply border-l-4 border-accent pl-4 italic text-textSecondary my-4;
+}
+
+.tiptap ul {
+  @apply list-disc list-outside mb-4 pl-6 space-y-1;
+}
+
+.tiptap ol {
+  @apply list-decimal list-outside mb-4 pl-6 space-y-1;
+}
+
+.tiptap li p {
+  @apply inline-block m-0;
+}
+
+.tiptap code {
+  @apply bg-surfaceHover text-textPrimary px-1.5 py-0.5 rounded text-sm font-mono;
+}
+
+.tiptap pre {
+  @apply text-textPrimary font-mono text-sm leading-relaxed;
+}
+
+html.dark .tiptap pre {
+  @apply text-[#abb2bf];
+}
+
+.tiptap pre code {
+  @apply bg-transparent text-inherit p-0 rounded-none text-sm;
+}
+
+.tiptap mark {
+  @apply rounded-sm px-1 py-0.5;
+}
+
+html.dark .tiptap mark {
+  color: #000000 !important;
+  font-weight: 700 !important;
+}
+
+.tiptap .aesthetic-quote {
+  font-family: var(--font-serif);
+  font-style: italic;
+  color: var(--color-accent);
+}
+
+.tiptap a {
+  background-color: #e5e7eb; /* Tailwind gray-200 */
+  color: #111827; /* Tailwind gray-900 */
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: rgba(17, 24, 39, 0.5);
+  text-underline-offset: 2px;
+  transition: all 0.2s;
+}
+
+.tiptap a:hover {
+  background-color: #d1d5db; /* Tailwind gray-300 */
+}
+
+html.dark .tiptap a {
+  background-color: #374151; /* Tailwind gray-700 */
+  color: #f3f4f6; /* Tailwind gray-100 */
+  text-decoration-color: rgba(243, 244, 246, 0.5);
+}
+
+html.dark .tiptap a:hover {
+  background-color: #4b5563; /* Tailwind gray-600 */
+}
+
+/* Light Theme Syntax Highlighting Override (Claude Style) */
+.hljs {
+  background: transparent !important;
+  color: var(--color-textPrimary) !important;
+}
+
+html:not(.dark) .hljs-keyword, 
+html:not(.dark) .hljs-selector-tag, 
+html:not(.dark) .hljs-built_in, 
+html:not(.dark) .hljs-name, 
+html:not(.dark) .hljs-tag {
+  color: #0056b3 !important;
+}
+html:not(.dark) .hljs-string, 
+html:not(.dark) .hljs-title, 
+html:not(.dark) .hljs-section, 
+html:not(.dark) .hljs-attribute, 
+html:not(.dark) .hljs-literal, 
+html:not(.dark) .hljs-template-tag, 
+html:not(.dark) .hljs-template-variable, 
+html:not(.dark) .hljs-type, 
+html:not(.dark) .hljs-addition {
+  color: #a31515 !important;
+}
+html:not(.dark) .hljs-comment, 
+html:not(.dark) .hljs-quote, 
+html:not(.dark) .hljs-deletion, 
+html:not(.dark) .hljs-meta {
+  color: #008000 !important;
+}
+html:not(.dark) .hljs-number {
+  color: #098658 !important;
+}
+
+/* Custom Scrollbar - Extremely Minimal */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-textSecondary);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
