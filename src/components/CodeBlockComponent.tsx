@@ -1,13 +1,22 @@
+import { useState } from 'react';
 import { NodeViewWrapper, NodeViewContent } from '@tiptap/react';
-import { Play, Trash2, TerminalSquare } from 'lucide-react';
+import { Play, Trash2, TerminalSquare, ChevronDown } from 'lucide-react';
 import { useConsoleStore } from '../store/useConsoleStore';
 import { useModalStore } from '../store/useModalStore';
+
+const LANGUAGES = [
+  { value: 'python', label: 'Python' },
+  { value: 'javascript', label: 'JavaScript (Node)' },
+  { value: 'bash', label: 'Bash' },
+];
 
 export const CodeBlockComponent = ({ node, updateAttributes, deleteNode }: any) => {
   const { openConsole, addLog, setLoading } = useConsoleStore();
   const { confirm } = useModalStore();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const language = node.attrs.language || 'python';
+  const currentLanguageLabel = LANGUAGES.find(l => l.value === language)?.label || 'Python';
 
   const handleDelete = async () => {
     const isConfirmed = await confirm({
@@ -92,23 +101,61 @@ export const CodeBlockComponent = ({ node, updateAttributes, deleteNode }: any) 
 
   return (
     <NodeViewWrapper
-      className="group relative rounded-xl overflow-hidden bg-[#f8f9fa] dark:bg-[#1e1e1e] my-6 border border-[#e5e7eb] dark:border-[#333] shadow-sm"
+      className="not-prose group relative rounded-xl border border-purple-200 dark:border-purple-900/30 my-6 overflow-hidden shadow-sm"
     >
-      <div className="flex items-center justify-between px-4 py-2 bg-[#f3f4f6] dark:bg-[#2d2d2d] border-b border-[#e5e7eb] dark:border-[#333]" contentEditable={false}>
-        <select
-          value={language}
-          onChange={(e) => updateAttributes({ language: e.target.value })}
-          className="bg-transparent text-textSecondary dark:text-gray-400 text-xs font-mono outline-none cursor-pointer hover:text-textPrimary dark:hover:text-white transition-colors"
-        >
-          <option value="python">Python</option>
-          <option value="javascript">JavaScript (Node)</option>
-          <option value="bash">Bash</option>
-        </select>
+      <div 
+        className="flex items-center justify-between px-4 py-2 !bg-purple-100/50 dark:!bg-[#1C1A24] border-b border-purple-200 dark:border-purple-900/30" 
+        contentEditable={false}
+      >
+        {/* Custom Dropdown Trigger & Menu */}
+        <div className="relative">
+          <button
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-transparent !text-purple-800 dark:!text-purple-300 text-[13px] font-sans font-medium outline-none cursor-pointer hover:!bg-purple-200/60 dark:hover:!bg-purple-900/40 transition-colors"
+          >
+            {currentLanguageLabel}
+            <ChevronDown 
+              size={14} 
+              className={`transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} 
+            />
+          </button>
 
-        <div className="flex items-center gap-2 transition-opacity duration-200 opacity-100 md:opacity-0 md:group-hover:opacity-100">
+          {isDropdownOpen && (
+            <>
+              {/* Invisible overlay to close dropdown when clicking outside */}
+              <div 
+                className="fixed inset-0 z-10" 
+                onClick={() => setIsDropdownOpen(false)} 
+              />
+              
+              {/* Dropdown Menu */}
+              <div className="absolute top-full left-0 mt-1 w-44 !bg-white dark:!bg-[#1C1A24] border border-purple-100 dark:border-purple-900/50 rounded-lg shadow-lg z-20 overflow-hidden py-1.5">
+                {LANGUAGES.map((lang) => (
+                  <button
+                    key={lang.value}
+                    onClick={() => {
+                      updateAttributes({ language: lang.value });
+                      setIsDropdownOpen(false);
+                    }}
+                    className={`w-full text-left px-3 py-1.5 text-[13px] font-sans transition-colors ${
+                      language === lang.value
+                        ? '!bg-purple-100 !text-purple-900 dark:!bg-purple-900/60 dark:!text-purple-100 font-semibold'
+                        : '!text-slate-600 dark:!text-purple-300 hover:!bg-purple-50 dark:hover:!bg-purple-900/30'
+                    }`}
+                  >
+                    {lang.label}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex items-center gap-1.5 transition-opacity duration-200 opacity-100 md:opacity-0 md:group-hover:opacity-100">
           <button
             onClick={handleRunExternal}
-            className="hidden md:flex items-center gap-1.5 px-3 py-1 bg-surfaceHover hover:bg-border text-textPrimary text-xs font-medium rounded transition-colors dark:bg-[#333] dark:hover:bg-[#444] dark:text-white"
+            className="hidden md:flex items-center gap-1.5 px-2.5 py-1 !text-purple-600 hover:!text-purple-900 hover:!bg-purple-200/60 dark:!text-zinc-400 dark:hover:!text-purple-200 dark:hover:!bg-purple-900/40 text-xs font-medium rounded-md transition-all"
             title="Run in Native Terminal"
           >
             <TerminalSquare size={14} />
@@ -116,14 +163,17 @@ export const CodeBlockComponent = ({ node, updateAttributes, deleteNode }: any) 
           </button>
           <button
             onClick={handleRun}
-            className="hidden md:flex items-center gap-1.5 px-3 py-1 bg-green-600/10 hover:bg-green-600/20 text-green-700 dark:text-green-400 text-xs font-medium rounded transition-colors"
+            className="hidden md:flex items-center gap-1.5 px-2.5 py-1 !text-purple-600 hover:!text-purple-900 hover:!bg-purple-200/60 dark:!text-zinc-400 dark:hover:!text-purple-200 dark:hover:!bg-purple-900/40 text-xs font-medium rounded-md transition-all"
           >
             <Play size={14} />
             Run
           </button>
+          
+          <div className="w-[1px] h-4 bg-purple-300 dark:bg-purple-800/50 mx-1 hidden md:block"></div>
+          
           <button
             onClick={handleDelete}
-            className="text-gray-400 hover:text-red-400 p-1 rounded transition-colors"
+            className="!text-purple-400 hover:!text-red-600 hover:!bg-red-50 dark:!text-zinc-500 dark:hover:!text-red-400 dark:hover:!bg-red-950/30 p-1.5 rounded-md transition-all"
             title="Delete block"
           >
             <Trash2 size={14} />
@@ -131,7 +181,18 @@ export const CodeBlockComponent = ({ node, updateAttributes, deleteNode }: any) 
         </div>
       </div>
 
-      <pre className="!m-0 !bg-transparent p-4 overflow-x-auto font-mono text-[13px] leading-relaxed">
+      {/* Code Editor Area */}
+      <pre 
+        className="!m-0 !bg-purple-50 dark:!bg-[#16141D] p-5 overflow-x-auto font-mono text-[13px] leading-relaxed !text-purple-950 dark:!text-purple-50 [&>code]:!bg-transparent
+        [&_.hljs-keyword]:!text-purple-700 [&_.hljs-keyword]:dark:!text-purple-400
+        [&_.hljs-string]:!text-fuchsia-600 [&_.hljs-string]:dark:!text-fuchsia-400
+        [&_.hljs-title]:!text-blue-700 [&_.hljs-title]:dark:!text-blue-400
+        [&_.hljs-function]:!text-indigo-700 [&_.hljs-function]:dark:!text-indigo-400
+        [&_.hljs-number]:!text-pink-600 [&_.hljs-number]:dark:!text-pink-400
+        [&_.hljs-comment]:!text-purple-400/80 [&_.hljs-comment]:dark:!text-slate-500
+        [&_.hljs-built_in]:!text-purple-600 [&_.hljs-built_in]:dark:!text-purple-300
+        [&_.hljs-literal]:!text-fuchsia-600 [&_.hljs-literal]:dark:!text-fuchsia-300"
+      >
         <NodeViewContent as={"code" as any} className="!bg-transparent" />
       </pre>
     </NodeViewWrapper>
