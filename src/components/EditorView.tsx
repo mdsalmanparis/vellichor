@@ -50,7 +50,6 @@ const AestheticQuote = Mark.create({
   },
 });
 
-// Custom Table Extensions for Excel/Sheet Compatibility
 const CustomTableCell = TableCell.extend({
   addAttributes() {
     return {
@@ -222,17 +221,20 @@ export function EditorView() {
           </div>
         </div>
         
-        {/* ADDED: max-w-[75%] to restrict width on the right, REMOVED: mx-auto so it stays left-aligned */}
-        <div className="flex-1 overflow-y-auto p-6 md:p-10 w-full md:max-w-[85%] lg:max-w-[75%] pb-32">
-          <input
-            type="text"
-            value={title}
-            onChange={handleTitleChange}
-            placeholder="Page Title"
-            className="text-3xl md:text-4xl font-serif font-bold text-textPrimary bg-transparent border-none outline-none w-full mb-6 md:mb-8 placeholder:text-textSecondary/50"
-          />
-          <EditorContent editor={editor} />
-      </div>
+        {/* FIX: The scrollable container takes 100% width so the scrollbar sits on the far right edge */}
+        <div className="flex-1 overflow-y-auto w-full pb-32">
+          {/* FIX: The inner content container is restricted in width, but kept left-aligned */}
+          <div className="p-6 md:p-10 w-full md:max-w-[85%] lg:max-w-[80%]">
+            <input
+              type="text"
+              value={title}
+              onChange={handleTitleChange}
+              placeholder="Page Title"
+              className="text-3xl md:text-4xl font-serif font-bold text-textPrimary bg-transparent border-none outline-none w-full mb-6 md:mb-8 placeholder:text-textSecondary/50"
+            />
+            <EditorContent editor={editor} />
+          </div>
+        </div>
     </div>
   );
 }
