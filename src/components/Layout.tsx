@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import { Menu } from 'lucide-react';
+import { Menu, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { Sidebar } from './Sidebar';
 import { ConsoleSidebar } from './ConsoleSidebar';
 import { GlobalModals } from './GlobalModals';
@@ -9,14 +9,14 @@ import { useDataStore } from '../store/useDataStore';
 
 export function Layout() {
   const { fetchData } = useDataStore();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Mobile drawer
+  const [isCollapsed, setIsCollapsed] = useState(false);    // Desktop shrink/expand
   const location = useLocation();
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
 
-  // Close sidebar on mobile when navigating
   useEffect(() => {
     setIsSidebarOpen(false);
   }, [location.pathname]);
@@ -29,7 +29,7 @@ export function Layout() {
           <button onClick={() => setIsSidebarOpen(true)} className="p-1 hover:bg-surfaceHover rounded text-textSecondary">
             <Menu size={20} />
           </button>
-          <span className="font-serif font-bold text-lg text-textPrimary tracking-tight">Vellichor</span>
+          <span className="font-heading font-bold text-lg text-textPrimary tracking-tight">Vellichor</span>
         </div>
       </div>
 
@@ -41,17 +41,19 @@ export function Layout() {
         />
       )}
 
-      {/* Sidebar Wrapper */}
+      {/* Sidebar Wrapper - Dynamic Width */}
       <div className={`
         fixed md:static inset-y-0 left-0 z-50 transform 
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} 
-        md:translate-x-0 transition-transform duration-300 ease-in-out bg-surface md:bg-transparent w-72 md:w-64 border-r border-border md:border-r-0
+        md:translate-x-0 transition-all duration-300 ease-in-out bg-surface md:bg-transparent 
+        border-r border-border md:border-r-0
+        ${isCollapsed ? 'w-20' : 'w-72 md:w-64'}
       `}>
-        <Sidebar />
+        <Sidebar isCollapsed={isCollapsed} onToggle={() => setIsCollapsed(!isCollapsed)} />
       </div>
 
       <main className="flex-1 flex h-full overflow-hidden relative">
-        <div className="flex-1 flex flex-col h-full bg-surface md:shadow-[-4px_0_24px_-10px_rgba(0,0,0,0.05)] z-10 overflow-hidden relative md:border-l md:border-border md:rounded-tl-2xl md:mt-2 md:ml-2">
+        <div className="flex-1 flex flex-col h-full bg-surface md:shadow-[-4px_0_24px_-10px_rgba(0,0,0,0.05)] z-10 overflow-hidden relative md:border-l md:border-border md:rounded-tl-2xl md:mt-2">
           <Outlet />
         </div>
         <div className="hidden md:flex h-full">

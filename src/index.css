@@ -19,21 +19,22 @@
 
 @layer base {
   :root {
-    --bg: #fcfbf9;
+    /* Clean Light Purple Theme */
+    --bg: #fcf9fc;
     --surface: #ffffff;
-    --surface-hover: #f3f1ec;
-    --border: #e8e6e1;
-    --text-primary: #2d2b2a;
-    --text-secondary: #66635f;
+    --surface-hover: #f5f0f6;
+    --border: #e6dce8;
+    --text-primary: #3c3540; 
+    --text-secondary: #857a8a;
   }
 
   .dark {
-    --bg: #121212;
-    --surface: #1e1e1e;
-    --surface-hover: #2d2d2d;
-    --border: #333333;
-    --text-primary: #e8e8e8;
-    --text-secondary: #999999;
+    --bg: #1c1a1f;
+    --surface: #252229;
+    --surface-hover: #312d36;
+    --border: #423d47;
+    --text-primary: #e6e2e8;
+    --text-secondary: #a39ca8;
   }
 
   /* FORCE MONTSERRAT GLOBALLY ON ALL HEADINGS */
@@ -45,16 +46,111 @@
   }
 
   body {
-    @apply bg-background text-text-primary font-sans antialiased;
+    /* overflow-hidden prevents the double scrollbar from hanging on the right side */
+    @apply bg-background text-text-primary font-sans antialiased overflow-hidden;
   }
 }
 
-/* Tiptap Editor Overrides */
+/* ========================================= */
+/* TIPTAP EDITOR OVERRIDES                   */
+/* ========================================= */
+
 .tiptap {
-  @apply outline-none min-h-[300px] text-sm leading-relaxed font-sans;
+  @apply outline-none text-[15px] font-sans leading-relaxed;
+  padding-bottom: 2rem;
 }
 
-/* Tiptap specific Heading styles */
+/* Code Blocks */
+.tiptap pre {
+  @apply p-4 rounded-xl text-text-primary font-mono text-sm my-6 bg-surface border border-border shadow-sm;
+}
+
+.tiptap code {
+  @apply bg-surface-hover text-text-primary px-1.5 py-0.5 rounded text-sm font-mono border border-border/50;
+}
+
+/* ========================================= */
+/* BEAUTIFUL PURPLE TABLE THEME              */
+/* ========================================= */
+.tiptap table {
+  @apply my-6 w-full bg-surface;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+  border-radius: 0.75rem;
+  border: 1px solid #e9d5ff; /* purple-200 */
+  box-shadow: 0 4px 6px -1px rgba(168, 85, 247, 0.1), 0 2px 4px -2px rgba(168, 85, 247, 0.05);
+}
+
+.dark .tiptap table {
+  border-color: rgba(168, 85, 247, 0.3);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+}
+
+.tiptap th {
+  @apply font-semibold text-left;
+  background-color: #faf5ff; /* purple-50 */
+  color: #581c87; /* purple-900 */
+  border-bottom: 1px solid #e9d5ff;
+  border-right: 1px solid #f3e8ff; /* purple-100 */
+  padding: 0.75rem 1rem;
+  position: relative;
+}
+
+.dark .tiptap th {
+  background-color: rgba(168, 85, 247, 0.1);
+  color: #e9d5ff;
+  border-bottom-color: rgba(168, 85, 247, 0.3);
+  border-right-color: rgba(168, 85, 247, 0.15);
+}
+
+.tiptap td {
+  padding: 0.75rem 1rem;
+  position: relative;
+  border-bottom: 1px solid #f3e8ff;
+  border-right: 1px solid #f3e8ff;
+  transition: background-color 0.2s ease;
+}
+
+.dark .tiptap td {
+  border-bottom-color: rgba(168, 85, 247, 0.15);
+  border-right-color: rgba(168, 85, 247, 0.15);
+}
+
+/* Remove borders on the last row/column to keep the rounded corners clean */
+.tiptap tr:last-child td { border-bottom: none; }
+.tiptap th:last-child, .tiptap td:last-child { border-right: none; }
+
+/* Subtle hover effect for rows */
+.tiptap tr:hover td { background-color: #faf5ff; }
+.dark .tiptap tr:hover td { background-color: rgba(168, 85, 247, 0.05); }
+
+/* Selection ring for active cells */
+.tiptap .selectedCell:after {
+  z-index: 2;
+  position: absolute;
+  content: "";
+  left: 0; right: 0; top: 0; bottom: 0;
+  background: rgba(168, 85, 247, 0.15);
+  border: 2px solid #a855f7;
+  pointer-events: none;
+}
+
+/* Column resize handle */
+.tiptap .column-resize-handle {
+  position: absolute;
+  right: -2px;
+  top: 0; bottom: -2px;
+  width: 4px;
+  background-color: #a855f7;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* ========================================= */
+/* TYPOGRAPHY & ELEMENTS                     */
+/* ========================================= */
+
 .tiptap h1 {
   @apply text-4xl font-extrabold mt-8 mb-4 tracking-tight;
 }
@@ -63,25 +159,26 @@
   @apply text-2xl font-bold mt-6 mb-3;
 }
 
-/* Code & Quotes */
+/* Aesthetic Quotes */
 .tiptap blockquote {
-  @apply border-l-4 border-accent pl-4 italic text-text-secondary my-4 font-quote text-lg;
-}
-
-.tiptap code {
-  @apply bg-surface-hover text-text-primary px-1.5 py-0.5 rounded text-sm font-mono;
-}
-
-.tiptap pre {
-  @apply bg-surface-hover p-4 rounded-lg text-text-primary font-mono text-sm leading-relaxed my-4 border border-border;
+  @apply border-l-4 border-accent pl-5 italic text-text-secondary my-6 font-quote text-2xl bg-surface-hover py-3 rounded-r-xl;
 }
 
 /* Minimalist Scrollbar */
 ::-webkit-scrollbar {
-  width: 5px;
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: 5px;
+  background: var(--border);
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #d4c5d6;
 }
