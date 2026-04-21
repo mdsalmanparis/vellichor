@@ -134,4 +134,29 @@ ${code}
 
 export default defineConfig({
   plugins: [react(), codeExecutionPlugin()],
+  build: {
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            const popped = id.split('node_modules/').pop();
+            if (popped) {
+                const module = popped.split('/')[0];
+                if (module === 'react' || module === 'react-dom' || module === 'react-router-dom') {
+                    return 'react';
+                }
+                if (module.startsWith('@tiptap')) {
+                    return 'tiptap';
+                }
+                if (module === 'lucide-react') {
+                    return 'lucide';
+                }
+                return 'vendor';
+            }
+          }
+        },
+      },
+    },
+  },
 })

@@ -3,7 +3,7 @@ import { Editor } from '@tiptap/react';
 import { 
   Bold, Italic, Heading1, Heading2, 
   Quote, List, ListOrdered, Code, 
-  Highlighter, PlayCircle, TerminalSquare,
+  Highlighter, PlayCircle,
   Table as TableIcon, Trash2, ChevronDown, 
   ArrowDownAZ, ArrowUpZA, Columns, Rows
 } from 'lucide-react';

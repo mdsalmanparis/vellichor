@@ -3,10 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { useDataStore } from '../store/useDataStore';
 import { useAuthStore } from '../store/useAuthStore';
 import { useThemeStore } from '../store/useThemeStore';
-import { useModalStore } from '../store/useModalStore';
 import { 
   Folder as FolderIcon, FileText, ChevronRight, ChevronDown, 
-  Plus, LogOut, FolderPlus, FilePlus2, Moon, Sun, Trash2,
+  Plus, LogOut, Moon, Sun, Trash2,
   PanelLeftClose, PanelLeftOpen
 } from 'lucide-react';
 import { TrashModal } from './TrashModal';
@@ -17,22 +16,18 @@ interface SidebarProps {
 }
 
 export function Sidebar({ isCollapsed, onToggle }: SidebarProps) {
-  const { folders, sections, pages, addFolder, addSection, addPage, removeFolder, removeSection, removePage } = useDataStore();
+  const { folders, pages } = useDataStore();
   const { signOut, user } = useAuthStore();
   const { isDark, toggleTheme } = useThemeStore();
-  const { confirm, prompt } = useModalStore();
   const navigate = useNavigate();
   
   const [expandedFolders, setExpandedFolders] = useState<Record<string, boolean>>({});
-  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
   const [isTrashOpen, setIsTrashOpen] = useState(false);
 
   const activeFolders = folders.filter(f => !f.is_deleted);
-  const activeSections = sections.filter(s => !s.is_deleted);
   const activePages = pages.filter(p => !p.is_deleted);
 
   const toggleFolder = (id: string) => !isCollapsed && setExpandedFolders(prev => ({ ...prev, [id]: !prev[id] }));
-  const toggleSection = (id: string) => !isCollapsed && setExpandedSections(prev => ({ ...prev, [id]: !prev[id] }));
 
   // Helper for creating content (omitted logic for brevity, same as yours)
   const handleCreateFolder = async () => { /* ... */ };
